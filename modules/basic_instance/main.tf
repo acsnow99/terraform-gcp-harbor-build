@@ -32,21 +32,19 @@ resource "null_resource" "install-harbor" {
     }
     provisioner "file" {
         source = "${var.commandfile}"
-        destination = "/tmp/run-command.sh"
-    }
-    provisioner "file" {
-        source = "~/terraform/gcp/harbor/harbor-instance/"
-        destination = "~/terraform_harbor/"
+        destination = "~/run-command.sh"
     }
     provisioner "file" {
         source = "~/terraform/terraform_keys/terraform-gcp-harbor-80a453b96ca7.json"
-        destination = "~/terraform_harbor/terraform_key.json"
+        destination = "~/terraform_key.json"
     }
     provisioner "remote-exec" {
         inline = [
-            # uses the file from the other provisioner to install docker and download harbor
-            "sudo chmod 755 /tmp/run-command.sh",
-            "sudo /tmp/run-command.sh",
+            # file must be run through ssh later
+            "sudo chmod 755 ~/run-command.sh",
+            "mkdir ~/terraform_harbor",
+            "mv ~/terraform_key.json ~/terraform_harbor/terraform_key.json",
+            "sudo chmod 755 ~/terraform_harbor/terraform_key.json",
         ]
     }
 }

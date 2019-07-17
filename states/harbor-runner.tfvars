@@ -1,2 +1,2 @@
-prefix = "harbor-runner"
+prefix = "harbor-runner-single"
 commandfile = "dockerce-install.sh"
