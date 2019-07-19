@@ -20,3 +20,6 @@ variable "machine" {
 variable "commandfile" {
     type = "string"
 }
+variable "credentials-file" {
+    type = "string"
+}
