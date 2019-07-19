@@ -13,7 +13,7 @@ sudo chmod +x /usr/local/bin/docker-compose
 
 # generate ssh keys for the new instance
 cd ~/.ssh
-yes | ssh-keygen -t rsa -N "" -f ~/.ssh/id_rsa
+ssh-keygen -t rsa -N "" -f ~/.ssh/id_rsa
 #sudo chown alexsnow: ~/.ssh/id_rsa*
 
 # get terraform
@@ -28,7 +28,7 @@ cd ~/terraform_harbor
 git clone https://github.com/IGNW/terraform-gcp-harbor-instance.git
 cd terraform-gcp-harbor-instance
 terraform init
-yes yes | terraform apply -var-file=states/harbor-master-remote1.tfvars
+yes yes | terraform apply -var-file=states/harbor-master-remote.tfvars
 
 # get the ip address from the terraform output into the rest of the script
 ip=$(terraform output | tr -d "instance-ip = -")

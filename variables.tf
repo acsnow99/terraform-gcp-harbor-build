@@ -23,3 +23,12 @@ variable "commandfile" {
 variable "credentials-file" {
     type = "string"
 }
+
+variable "layer-1" {
+    description = "Set to 1 for a runner vm that has a script that must be run through ssh to set up a Harbor instance"
+    default = "0"
+}
+variable "layer-2" {
+    description = "Set to 1 for an auto-setup Harbor instance with less direct control"
+    default = "0"
+}

@@ -1,1 +1,1 @@
-{"Modules":[{"Key":"","Source":"","Dir":"."},{"Key":"harbor-runner-instance","Source":"./modules/basic_instance","Dir":"modules/basic_instance"}]}
+{"Modules":[{"Key":"","Source":"","Dir":"."},{"Key":"harbor-runner-instance","Source":"./modules/runner-vm","Dir":"modules/runner-vm"}]}

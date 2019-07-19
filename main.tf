@@ -15,10 +15,12 @@ resource "google_compute_firewall" "default" {
 }
 
 module "harbor-runner-instance" {
-    source = "./modules/basic_instance"
+    source = "./modules/runner-vm"
 
     prefix = "${var.prefix}"
     image = "${var.image}"
     commandfile = "${var.commandfile}"
     machine = "${var.machine}"
+    layer-1 = "${var.layer-1}"
+    layer-2 = "${var.layer-2}"
 }
