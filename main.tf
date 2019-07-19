@@ -1,4 +1,3 @@
-# test comment
 provider "google" {
     credentials = "${file(var.credentials-file)}"
     project = "terraform-gcp-harbor"
