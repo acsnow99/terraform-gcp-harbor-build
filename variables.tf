@@ -2,6 +2,14 @@ variable "region" {
     type = "string"
     default = "us-west1"
 }
+variable "project" {
+    type = "string"
+    default = "terraform-gcp-harbor"
+}
+variable "network" {
+    type = "string"
+    default = "terraform-gcp-harbor"
+}
 
 variable "prefix" {
     type = "string"

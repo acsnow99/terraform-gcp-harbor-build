@@ -1,13 +1,13 @@
 provider "google" {
     credentials = "${file(var.credentials-file)}"
-    project = "terraform-gcp-harbor"
+    project = "${var.project}"
     region = "${var.region}"
     zone = "${var.region}-a"
 }
 
 resource "google_compute_firewall" "default" {
     name = "${var.prefix}-firewall"
-    network = "terraform-gcp-harbor"
+    network = "${var.network}"
     
     allow {
         protocol = "tcp"
