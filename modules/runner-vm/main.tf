@@ -10,8 +10,8 @@ resource "google_compute_instance" "runner" {
     }
 
     network_interface {
-        network = "terraform-gcp-harbor"
-        subnetwork = "harbor-repo-0"
+        network = "${var.network}"
+        subnetwork = "${var.subnet}"
         access_config {
             # nat_ip is here
         }
@@ -64,8 +64,8 @@ resource "null_resource" "install-harbor" {
         destination = "/tmp/run-command.sh"
     }
     provisioner "file" {
-        source = "~/terraform/terraform_keys/terraform-gcp-harbor-80a453b96ca7.json"
-        destination = "~/terraform_key.json"
+        source = "${var.gcp-service-key}"
+        destination = "${var.gcp-key-location}"
     }
     provisioner "remote-exec" {
         inline = [

@@ -10,8 +10,8 @@ resource "google_compute_instance" "runner" {
     }
 
     network_interface {
-        network = "terraform-gcp-harbor"
-        subnetwork = "harbor-repo-0"
+        network = "${var.network}"
+        subnetwork = "${var.subnet}"
         access_config {
             # nat_ip is here
         }

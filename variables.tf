@@ -11,6 +11,11 @@ variable "network" {
     default = "terraform-gcp-harbor"
 }
 
+variable "subnet" {
+    type = "string"
+    default = "harbor-repo-0"
+}
+
 variable "prefix" {
     type = "string"
     default = "google-cloud-compute"
@@ -39,4 +44,16 @@ variable "layer-1" {
 variable "layer-2" {
     description = "Set to 1 for an auto-setup Harbor instance with less direct control"
     default = "0"
+}
+
+variable "protocol" {
+    default = "tcp"
+}
+
+variable "gcp-service-key" {
+    default = "~/terraform/terraform_keys/terraform-gcp-harbor-80a453b96ca7.json"
+}
+variable "gcp-key-location" {
+    description = "The remote location the key will be put in. Only change if you are using a different script from the harbor ones provided."
+    default = "~/terraform_key.json"
 }

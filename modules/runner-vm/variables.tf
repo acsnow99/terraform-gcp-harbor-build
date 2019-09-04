@@ -2,6 +2,13 @@ variable "prefix" {
     description = "Name for the entire system(e.g. harbor-ubuntu)"
 }
 
+variable "network" {
+    default = "terraform-gcp-harbor"
+}
+variable "subnet" {
+    default = "harbor-repo-0"
+}
+
 variable "image" {
     description = "Which operating system to pull from GCP"
 }
@@ -22,4 +29,11 @@ variable "layer-1" {
 variable "layer-2" {
     description = "Set to 1 for an auto-setup Harbor instance with less direct control"
     default = "0"
+}
+
+variable "gcp-service-key" {
+
+}
+variable "gcp-key-location" {
+
 }

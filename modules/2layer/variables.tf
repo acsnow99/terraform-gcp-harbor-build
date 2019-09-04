@@ -2,6 +2,13 @@ variable "prefix" {
     description = "Name for the entire system(e.g. harbor-ubuntu)"
 }
 
+variable "network" {
+    default = "terraform-gcp-harbor"
+}
+variable "subnet" {
+    default = "harbor-repo-0"
+}
+
 variable "image" {
     description = "Which operating system to pull from GCP"
 }
