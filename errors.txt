@@ -1,5 +1,5 @@
 Creating firewall...
 failed.
 ERROR: (gcloud.compute.firewall-rules.create) Could not fetch resource:
- - The resource 'projects/terraform-gcp-harbor-2/global/firewalls/mc-java-firewall' already exists
+ - The resource 'projects/terraform-gcp-harbor-2/global/firewalls/mc-bedrock-firewall' already exists
 
