@@ -4,20 +4,25 @@ version="1.14.4"
 modpath=""
 worldtype="DEFAULT"
 modpack=""
-servtype="VANILLA"
 
-while getopts ":hg:w:v:m:f:b" opt; do
+while getopts ":hg:w:v:m:f:be:" opt; do
   case ${opt} in
    h )
-     echo "Usage:
+     echo "
+BEFORE RUNNING, EDIT states/mc-server-java.tfvars SO THAT THE project AND credentials-file VARIABLES MATCH YOURS
+
+Usage:
 -g Gamemode of the server(0 or 1)
 -w Worldname of the server
 -v Version of Minecraft to use
 -m Activates Forge; path to the mod file(.jar) required
 -b Creates a Biomes 'O' Plenty world if -f or -m is also called and the modpath after -m points to the Biomes 'O' Plenty mod file
 -f Activates FTB; URL or path of modpack required
+-e Make the server with existing world files. Include the path to the directory of the world(should have the same name as the world)
+
 Note: Make sure the modpacks and mods match the version of Minecraft under the -v flag
-Other Note: Using both -m and -f will only activate -m" 1>&2
+Other Note: Using both -m and -f will only activate -m
+" 1>&2
      exit 1
      ;;
    g )
@@ -31,7 +36,6 @@ Other Note: Using both -m and -f will only activate -m" 1>&2
      ;;
    m )
      modded=true
-     servtype="FORGE"
      modpath=$OPTARG
      ;;
    b )
@@ -39,11 +43,17 @@ Other Note: Using both -m and -f will only activate -m" 1>&2
      ;;
    f )
      ftb=true
-     servtype="FTB"
      modpack=$OPTARG
+     ;;
+   e )
+     exists=true
+     worldpath=$OPTARG
      ;;
    \? )
      echo "Invalid Option: -$OPTARG
+
+BEFORE RUNNING, EDIT states/mc-server-java.tfvars SO THAT THE project AND credentials-file VARIABLES MATCH YOURS
+
 Usage:
 -g Gamemode of the server(0 or 1)
 -w Worldname of the server
@@ -51,8 +61,11 @@ Usage:
 -m Activates Forge; path to the mod file(.jar) required
 -b Creates a Biomes 'O' Plenty world if -m is also called and the modpath points to the Biomes 'O' Plenty mod file
 -f Activates FTB; URL or path of modpack required
+-e Make the server with existing world files. Include the path to the directory of the world(should have the same name as the world)
+
 Note: Make sure the modpacks and mods match the version of Minecraft under the -v flag
-Other Note: Using both -m and -f will only activate -m" 1>&2
+Other Note: Using both -m and -f will only activate -m
+" 1>&2
      exit 1
      ;;
    : )
@@ -164,7 +177,8 @@ sudo docker run hello-world
 apt-get install -y default-jdk
 
 mkdir ~/minecraft
-mv /tmp/server.properties ~/minecraft/server.properties
+mkdir ~/minecraft/FeedTheBeast
+mv /tmp/server.properties ~/minecraft/FeedTheBeast/server.properties
 
 #start the server
 docker run -d -p 25565:25565 -e EULA=TRUE -e VERSION='${version}' -e TYPE=FTB -e FTB_SERVER_MOD='${modpack}' -v ~/minecraft:/data --name mc itzg/minecraft-server' > /Users/alexsnow/terraform/gcp/harbor/terraform-gcp-harbor-build/resources/mc-install-java-docker.sh
@@ -204,8 +218,42 @@ fi
 
 if [ $run = y ]
 then
+
+    # 2> errors.txt means that errors for resources already existing will go into a file instead of confusing the user
+    gcloud compute networks create minecraft \
+    --subnet-mode=custom \
+    --bgp-routing-mode=regional 2> errors.txt
+    gcloud compute networks subnets create minecraft-1 \
+    --network=minecraft \
+    --range=10.0.0.0/9 \
+    --region=us-west1 2> errors.txt
+
     yes yes | terraform apply -var-file=states/mc-server-java.tfvars
     gcloud compute instances add-tags mc-server-java --tags mc-java
-    gcloud compute firewall-rules create mc-java-firewall --allow tcp:25565 \
-    --priority 500 --network minecraft --target-tags mc-java
+    gcloud compute firewall-rules create mc-java-firewall --allow tcp \
+    --priority 500 --network minecraft --target-tags mc-java 2> errors.txt
+
+    ip=$(terraform output | tr -d "instance-ip = -")
+    user=$(whoami)
+
+
+    if [ $exists ]
+    then 
+      # copy world files over
+      if [ $ftb ]
+      then
+        gcloud compute ssh --zone us-west1-a mc-server-java --command 'sudo rm -r ~/minecraft/FeedTheBeast/'${worldname}''
+        scp -r ~/Desktop/Toast $user@$ip:/home/alexsnow/
+        ssh $user@$ip sudo mv /home/alexsnow/Toast /home/alexsnow/minecraft/FeedTheBeast
+        gcloud compute ssh --zone us-west1-a mc-server-java --command 'sudo chmod -R 777 /home/alexsnow/minecraft/FeedTheBeast/'${worldname}''
+      else
+        gcloud compute ssh --zone us-west1-a mc-server-java --command 'rm -r ~/minecraft/'${worldname}''
+        gcloud compute scp --recurse $worldpath mc-server-java:~/minecraft
+        chmod -R 777 Toast
+      fi
+
+      # restart server
+      gcloud compute ssh --zone us-west1-a mc-server-java --command 'sudo docker stop mc'
+      gcloud compute ssh --zone us-west1-a mc-server-java --command 'sudo docker start mc'
+    fi 
 fi
