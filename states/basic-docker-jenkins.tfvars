@@ -8,3 +8,6 @@ image = "centos-7-v20190729"
 
 network = "default"
 subnet = "default"
+
+gcp-service-key = "/var/jenkins_home/terraform_keys/terraform-gcp-harbor-2-45311dea3003.json"
+gcp-key-location = "~/terraform_key.json"
