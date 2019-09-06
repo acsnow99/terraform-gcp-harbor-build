@@ -46,10 +46,6 @@ variable "layer-2" {
     default = "0"
 }
 
-variable "protocol" {
-    default = "tcp"
-}
-
 variable "gcp-service-key" {
     default = "~/terraform/terraform_keys/terraform-gcp-harbor-80a453b96ca7.json"
 }

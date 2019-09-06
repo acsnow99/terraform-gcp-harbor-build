@@ -10,7 +10,7 @@ resource "google_compute_firewall" "default" {
     network = "${var.network}"
     
     allow {
-        protocol = "${var.protocol}"
+        protocol = "tcp"
         ports    = ["80", "443", "22"]
     }
 }
