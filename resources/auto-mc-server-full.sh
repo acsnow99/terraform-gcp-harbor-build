@@ -129,7 +129,7 @@ level-seed=
 use-native-transport=true
 prevent-proxy-connections=false
 motd=A Minecraft Server powered by K8S
-enable-rcon=true" > /Users/alexsnow/terraform/gcp/harbor/terraform-gcp-harbor-build/resources/server.properties
+enable-rcon=true" > ./server.properties
 
 
 if [ $bedrock ]
@@ -156,8 +156,9 @@ mkdir ~/minecraft/worlds
 mkdir ~/minecraft/worlds/'${worldname}'
 
 #start the server
-docker run -d -p 19132:19132/udp -e EULA=TRUE -e VERSION='${version}' -e LEVEL_NAME='${worldname}' -e GAMEMODE='${gamemode}' -v ~/minecraft:/data --name mc itzg/minecraft-bedrock-server' > /Users/alexsnow/terraform/gcp/harbor/terraform-gcp-harbor-build/resources/mc-install-bedrock-docker.sh
+docker run -d -p 19132:19132/udp -e EULA=TRUE -e VERSION='${version}' -e LEVEL_NAME='${worldname}' -e GAMEMODE='${gamemode}' -v ~/minecraft:/data --name mc itzg/minecraft-bedrock-server' > ./mc-install-bedrock-docker.sh
 
+    terraform init
     yes yes | terraform apply -var-file=states/mc-server-bedrock.tfvars
     gcloud compute instances add-tags mc-server-bedrock --tags mc-bedrock
     gcloud compute firewall-rules create mc-bedrock-firewall --allow udp \
@@ -209,7 +210,7 @@ mkdir ~/minecraft
 mv /tmp/server.properties ~/minecraft/server.properties
 
 #start the server
-docker run -d -p 25565:25565 -e EULA=TRUE -e VERSION='${version}' -e TYPE=FORGE -v ~/minecraft:/data --name mc itzg/minecraft-server' > /Users/alexsnow/terraform/gcp/harbor/terraform-gcp-harbor-build/resources/mc-install-java-docker.sh
+docker run -d -p 25565:25565 -e EULA=TRUE -e VERSION='${version}' -e TYPE=FORGE -v ~/minecraft:/data --name mc itzg/minecraft-server' > ./mc-install-java-docker.sh
 
     else
       echo "Server creation cancelled"
@@ -241,7 +242,7 @@ mkdir ~/minecraft/FeedTheBeast
 mv /tmp/server.properties ~/minecraft/FeedTheBeast/server.properties
 
 #start the server
-docker run -d -p 25565:25565 -e EULA=TRUE -e VERSION='${version}' -e TYPE=FTB -e FTB_SERVER_MOD='${modpack}' -v ~/minecraft:/data --name mc itzg/minecraft-server' > /Users/alexsnow/terraform/gcp/harbor/terraform-gcp-harbor-build/resources/mc-install-java-docker.sh
+docker run -d -p 25565:25565 -e EULA=TRUE -e VERSION='${version}' -e TYPE=FTB -e FTB_SERVER_MOD='${modpack}' -v ~/minecraft:/data --name mc itzg/minecraft-server' > ./mc-install-java-docker.sh
 
       else
         echo "Server creation cancelled"
@@ -268,7 +269,7 @@ mkdir ~/minecraft
 mv /tmp/server.properties ~/minecraft/server.properties
 
 #start the server
-docker run -d -p 25565:25565 -e EULA=TRUE -e VERSION='${version}' -v ~/minecraft:/data --name mc itzg/minecraft-server' > /Users/alexsnow/terraform/gcp/harbor/terraform-gcp-harbor-build/resources/mc-install-java-docker.sh
+docker run -d -p 25565:25565 -e EULA=TRUE -e VERSION='${version}' -v ~/minecraft:/data --name mc itzg/minecraft-server' > ./mc-install-java-docker.sh
 
       else
         echo "Server creation cancelled"
@@ -288,6 +289,7 @@ docker run -d -p 25565:25565 -e EULA=TRUE -e VERSION='${version}' -v ~/minecraft
       --range=10.0.0.0/9 \
       --region=us-west1 2> errors.txt
 
+      terraform init
       yes yes | terraform apply -var-file=states/mc-server-java.tfvars
       gcloud compute instances add-tags mc-server-java --tags mc-java
       gcloud compute firewall-rules create mc-java-firewall --allow tcp \
@@ -305,12 +307,12 @@ docker run -d -p 25565:25565 -e EULA=TRUE -e VERSION='${version}' -v ~/minecraft
           gcloud compute ssh --zone us-west1-a mc-server-java --command 'sudo rm -r ~/minecraft/FeedTheBeast/'${worldname}''
           scp -r $worldpath $user@$ip:/home/$user/
           ssh $user@$ip sudo mv /home/$user/$worldname /home/$user/minecraft/FeedTheBeast
-          gcloud compute ssh --zone us-west1-a mc-server-java --command 'sudo chmod -R 777 /home/alexsnow/minecraft/FeedTheBeast/'${worldname}''
+          gcloud compute ssh --zone us-west1-a mc-server-java --command 'sudo chmod -R 777 /home/'${user}'/minecraft/FeedTheBeast/'${worldname}''
         else
           gcloud compute ssh --zone us-west1-a mc-server-java --command 'sudo rm -r ~/minecraft/'${worldname}''
           scp -r $worldpath $user@$ip:/home/$user/
           ssh $user@$ip sudo mv /home/$user/$worldname /home/$user/minecraft
-          gcloud compute ssh --zone us-west1-a mc-server-java --command 'sudo chmod -R 777 /home/alexsnow/minecraft/'${worldname}''
+          gcloud compute ssh --zone us-west1-a mc-server-java --command 'sudo chmod -R 777 /home/'${user}'/minecraft/'${worldname}''
         fi
 
         # restart server

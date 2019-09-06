@@ -158,6 +158,7 @@ mkdir ~/minecraft/worlds/'${worldname}'
 #start the server
 docker run -d -p 19132:19132/udp -e EULA=TRUE -e VERSION='${version}' -e LEVEL_NAME='${worldname}' -e GAMEMODE='${gamemode}' -v ~/minecraft:/data --name mc itzg/minecraft-bedrock-server' > ./mc-install-bedrock-docker.sh
 
+    terraform init
     yes yes | terraform apply -var-file=states/mc-server-bedrock.tfvars
     gcloud compute instances add-tags mc-server-bedrock --tags mc-bedrock
     gcloud compute firewall-rules create mc-bedrock-firewall --allow udp \
@@ -288,6 +289,7 @@ docker run -d -p 25565:25565 -e EULA=TRUE -e VERSION='${version}' -v ~/minecraft
       --range=10.0.0.0/9 \
       --region=us-west1 2> errors.txt
 
+      terraform init
       yes yes | terraform apply -var-file=states/mc-server-java-jenkins.tfvars
       gcloud compute instances add-tags mc-server-java-jenkins --tags mc-java
       gcloud compute firewall-rules create mc-java-firewall --allow tcp \
