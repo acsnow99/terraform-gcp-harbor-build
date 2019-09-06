@@ -9,7 +9,7 @@ commandfile = "./resources/mc-install-java-docker.sh"
 credentials-file = "/var/jenkins_home/terraform_keys/terraform-gcp-harbor-2-45311dea3003.json"
 layer-2 = "1"
 image = "ubuntu-1804-bionic-v20190722a"
-gcp-service-key = "/var/jenkins_home/terraform-gcp-harbor-build/resources/server.properties"
+gcp-service-key = "./resources/server.properties"
 gcp-key-location = "/tmp/server.properties"
 
 project = "terraform-gcp-harbor-2"
