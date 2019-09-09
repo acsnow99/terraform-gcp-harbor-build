@@ -9,7 +9,7 @@ sudo docker run hello-world
 
 mkdir ~/minecraft
 mkdir ~/minecraft/worlds
-mkdir ~/minecraft/worlds/DOINGUS
+mkdir ~/minecraft/worlds/peepee-poopoo
 
 #start the server
-docker run -d -p 19132:19132/udp -e EULA=TRUE -e VERSION=1.12 -e LEVEL_NAME=DOINGUS -e GAMEMODE=creative -v ~/minecraft:/data --name mc itzg/minecraft-bedrock-server
+docker run -d -p 19132:19132/udp -e EULA=TRUE -e VERSION=1.12 -e LEVEL_NAME=peepee-poopoo -e GAMEMODE=creative -v ~/minecraft:/data --name mc itzg/minecraft-bedrock-server

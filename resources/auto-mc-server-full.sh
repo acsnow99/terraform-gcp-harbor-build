@@ -86,6 +86,9 @@ done
 shift $((OPTIND -1))
 
 
+#replace spaces with dashes
+worldname="$(echo $worldname | tr ' ' '-')"
+
 
 echo -e "spawn-protection=16
 max-tick-time=60000
@@ -129,7 +132,7 @@ level-seed=
 use-native-transport=true
 prevent-proxy-connections=false
 motd=A Minecraft Server powered by K8S
-enable-rcon=true" > ./server.properties
+enable-rcon=true" > ./resources/server.properties
 
 
 if [ $bedrock ]
@@ -156,13 +159,13 @@ mkdir ~/minecraft/worlds
 mkdir ~/minecraft/worlds/'${worldname}'
 
 #start the server
-docker run -d -p 19132:19132/udp -e EULA=TRUE -e VERSION='${version}' -e LEVEL_NAME='${worldname}' -e GAMEMODE='${gamemode}' -v ~/minecraft:/data --name mc itzg/minecraft-bedrock-server' > ./mc-install-bedrock-docker.sh
+docker run -d -p 19132:19132/udp -e EULA=TRUE -e VERSION='${version}' -e LEVEL_NAME='${worldname}' -e GAMEMODE='${gamemode}' -v ~/minecraft:/data --name mc itzg/minecraft-bedrock-server' > ./resources/mc-install-bedrock-docker.sh
 
     terraform init
     yes yes | terraform apply -var-file=states/mc-server-bedrock.tfvars
     gcloud compute instances add-tags mc-server-bedrock --tags mc-bedrock
     gcloud compute firewall-rules create mc-bedrock-firewall --allow udp \
-    --priority 500 --network minecraft --target-tags mc-bedrock 2> errors.txt
+    --priority 1000 --network minecraft --target-tags mc-bedrock 2> errors.txt
 
 
     if [ $exists ]
@@ -171,9 +174,12 @@ docker run -d -p 19132:19132/udp -e EULA=TRUE -e VERSION='${version}' -e LEVEL_N
       user=$(whoami)
 
       # copy world files over
-      gcloud compute ssh --zone us-west1-a mc-server-bedrock --command 'sudo rm -r ~/minecraft/worlds/'${worldname}'/*'
+      gcloud compute ssh --zone us-west1-a mc-server-bedrock --command 'sudo docker stop mc'
+      gcloud compute ssh --zone us-west1-a mc-server-bedrock --command 'sudo docker start mc'
+      #gcloud compute ssh --zone us-west1-a mc-server-bedrock --command 'sudo rm -r /home/'${user}'/minecraft/worlds/'${worldname}''
       scp -r $worldpath/db $user@$ip:/home/$user/
-      ssh $user@$ip sudo mv /home/$user/db /home/$user/minecraft/worlds/${worldname}/
+      ssh $user@$ip sudo rm -r /home/$user/minecraft/worlds/$worldname/db 
+      ssh $user@$ip sudo cp -r /home/$user/db /home/$user/minecraft/worlds/${worldname}/
       gcloud compute ssh --zone us-west1-a mc-server-bedrock --command 'sudo docker stop mc'
       gcloud compute ssh --zone us-west1-a mc-server-bedrock --command 'sudo docker start mc'
       #gcloud compute ssh --zone us-west1-a mc-server-bedrock --command 'sudo chmod -R 777 /home/alexsnow/minecraft/worlds/'${worldname}''
@@ -210,7 +216,7 @@ mkdir ~/minecraft
 mv /tmp/server.properties ~/minecraft/server.properties
 
 #start the server
-docker run -d -p 25565:25565 -e EULA=TRUE -e VERSION='${version}' -e TYPE=FORGE -v ~/minecraft:/data --name mc itzg/minecraft-server' > ./mc-install-java-docker.sh
+docker run -d -p 25565:25565 -e EULA=TRUE -e VERSION='${version}' -e TYPE=FORGE -v ~/minecraft:/data --name mc itzg/minecraft-server' > ./resources/mc-install-java-docker.sh
 
     else
       echo "Server creation cancelled"
@@ -242,7 +248,7 @@ mkdir ~/minecraft/FeedTheBeast
 mv /tmp/server.properties ~/minecraft/FeedTheBeast/server.properties
 
 #start the server
-docker run -d -p 25565:25565 -e EULA=TRUE -e VERSION='${version}' -e TYPE=FTB -e FTB_SERVER_MOD='${modpack}' -v ~/minecraft:/data --name mc itzg/minecraft-server' > ./mc-install-java-docker.sh
+docker run -d -p 25565:25565 -e EULA=TRUE -e VERSION='${version}' -e TYPE=FTB -e FTB_SERVER_MOD='${modpack}' -v ~/minecraft:/data --name mc itzg/minecraft-server' > ./resources/mc-install-java-docker.sh
 
       else
         echo "Server creation cancelled"
@@ -269,7 +275,7 @@ mkdir ~/minecraft
 mv /tmp/server.properties ~/minecraft/server.properties
 
 #start the server
-docker run -d -p 25565:25565 -e EULA=TRUE -e VERSION='${version}' -v ~/minecraft:/data --name mc itzg/minecraft-server' > ./mc-install-java-docker.sh
+docker run -d -p 25565:25565 -e EULA=TRUE -e VERSION='${version}' -v ~/minecraft:/data --name mc itzg/minecraft-server' > ./resources/mc-install-java-docker.sh
 
       else
         echo "Server creation cancelled"
@@ -293,7 +299,7 @@ docker run -d -p 25565:25565 -e EULA=TRUE -e VERSION='${version}' -v ~/minecraft
       yes yes | terraform apply -var-file=states/mc-server-java.tfvars
       gcloud compute instances add-tags mc-server-java --tags mc-java
       gcloud compute firewall-rules create mc-java-firewall --allow tcp \
-      --priority 500 --network minecraft --target-tags mc-java 2> errors.txt
+      --priority 1000 --network minecraft --target-tags mc-java 2> errors.txt
 
       ip=$(terraform output | tr -d "instance-ip = -")
       user=$(whoami)

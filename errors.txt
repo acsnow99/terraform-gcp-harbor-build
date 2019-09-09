@@ -1,3 +1,4 @@
+WARNING: Could not setup log file in /Users/alexsnow/.config/gcloud/logs, (IOError: [Errno 13] Permission denied: u'/Users/alexsnow/.config/gcloud/logs/2019.09.09/10.09.43.459548.log')
 Creating firewall...
 failed.
 ERROR: (gcloud.compute.firewall-rules.create) Could not fetch resource:

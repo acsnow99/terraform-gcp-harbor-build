@@ -9,7 +9,6 @@ commandfile = "./resources/mc-install-bedrock-docker.sh"
 credentials-file = "~/terraform/terraform_keys/terraform-gcp-harbor-2-45311dea3003.json"
 layer-2 = "1"
 image = "ubuntu-1804-bionic-v20190722a"
-protocol = "tcp"
 gcp-service-key = "~/terraform/gcp/harbor/terraform-gcp-harbor-build/resources/server.properties"
 gcp-key-location = "/tmp/server.properties"
 
