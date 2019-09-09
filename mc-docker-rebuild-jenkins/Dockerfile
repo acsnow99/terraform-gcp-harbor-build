@@ -30,9 +30,9 @@ RUN easy-add --file set-property --from https://github.com/itzg/set-property/rel
 ARG RESTIFY_VERSION=1.2.0
 RUN easy-add --file restify --from https://github.com/itzg/restify/releases/download/${RESTIFY_VERSION}/restify_${RESTIFY_VERSION}_linux_amd64.tar.gz
 
-COPY *.sh /opt/
+#COPY *.sh /opt/
 
-COPY property-definitions.json /etc/bds-property-definitions.json
+#COPY property-definitions.json /etc/bds-property-definitions.json
 
 # Available versions listed at
 # https://minecraft.gamepedia.com/Bedrock_Edition_1.11.0
