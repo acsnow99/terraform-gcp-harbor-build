@@ -6,6 +6,7 @@ worldtype="DEFAULT"
 modpack=""
 tfvars="states/mc-server-java.tfvars"
 bedrock_tfvars="states/mc-server-bedrock.tfvars"
+run="n"
 
 while getopts ":hg:w:v:m:f:be:rt:y" opt; do
   case ${opt} in
@@ -150,9 +151,11 @@ enable-rcon=true" > ./resources/server.properties
 
 if [ $bedrock ]
 then
-
-  echo "This command will create a Bedrock version "${version}" world titled '"${worldname}"' Continue(y or n)?"
-  read run
+  if [ $run = n ]
+  then
+    echo "This command will create a Bedrock version "${version}" world titled '"${worldname}"' Continue(y or n)?"
+    read run
+  fi
   if [ $run = y ]
   then
     echo "Then here we go!"
