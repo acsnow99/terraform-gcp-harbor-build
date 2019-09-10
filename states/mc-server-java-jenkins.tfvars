@@ -6,7 +6,7 @@ network = "minecraft"
 subnet = "minecraft-1"
 
 commandfile = "./resources/mc-install-java-docker.sh"
-credentials-file = "/var/jenkins_home/terraform_keys/terraform-gcp-harbor-2-45311dea3003.json"
+credentials-file = "/keys/terraform-gcp-harbor-2-fbb45d835ed3.json"
 layer-2 = "1"
 image = "ubuntu-1804-bionic-v20190722a"
 gcp-service-key = "./resources/server.properties"

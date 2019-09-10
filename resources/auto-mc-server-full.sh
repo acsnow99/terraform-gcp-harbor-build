@@ -173,25 +173,26 @@ docker run -d -p 19132:19132/udp -e EULA=TRUE -e VERSION='${version}' -e LEVEL_N
 
     terraform init
     yes yes | terraform apply -var-file=$bedrock_tfvars
-    gcloud compute instances add-tags mc-server-bedrock --tags mc-bedrock
+    machine=$(terraform output | sed '1d' | awk '{gsub("machine-name = ", "");print}')
+    gcloud compute instances add-tags $machine --tags mc-bedrock
     gcloud compute firewall-rules create mc-bedrock-firewall --allow udp \
     --priority 1000 --network minecraft --target-tags mc-bedrock 2> errors.txt
 
 
     if [ $exists ]
     then 
-      ip=$(terraform output | tr -d "instance-ip = -")
+      ip=$(terraform output | sed '2d' | tr -d "instance-ip = -")
       user=$(whoami)
 
       # copy world files over
-      gcloud compute ssh --zone us-west1-a mc-server-bedrock --command 'sudo docker stop mc'
-      gcloud compute ssh --zone us-west1-a mc-server-bedrock --command 'sudo docker start mc'
+      gcloud compute ssh --zone us-west1-a $machine --command 'sudo docker stop mc'
+      gcloud compute ssh --zone us-west1-a $machine --command 'sudo docker start mc'
       #gcloud compute ssh --zone us-west1-a mc-server-bedrock --command 'sudo rm -r /home/'${user}'/minecraft/worlds/'${worldname}''
       scp -r $worldpath/db $user@$ip:/home/$user/
       ssh $user@$ip sudo rm -r /home/$user/minecraft/worlds/$worldname/db 
       ssh $user@$ip sudo cp -r /home/$user/db /home/$user/minecraft/worlds/${worldname}/
-      gcloud compute ssh --zone us-west1-a mc-server-bedrock --command 'sudo docker stop mc'
-      gcloud compute ssh --zone us-west1-a mc-server-bedrock --command 'sudo docker start mc'
+      gcloud compute ssh --zone us-west1-a $machine --command 'sudo docker stop mc'
+      gcloud compute ssh --zone us-west1-a $machine --command 'sudo docker start mc'
       #gcloud compute ssh --zone us-west1-a mc-server-bedrock --command 'sudo chmod -R 777 /home/alexsnow/minecraft/worlds/'${worldname}''
     fi
 
@@ -307,11 +308,12 @@ docker run -d -p 25565:25565 -e EULA=TRUE -e VERSION='${version}' -v ~/minecraft
 
       terraform init
       yes yes | terraform apply -var-file=$tfvars
-      gcloud compute instances add-tags mc-server-java --tags mc-java
+      machine=$(terraform output | sed '1d' | awk '{gsub("machine-name = ", "");print}')
+      gcloud compute instances add-tags $machine --tags mc-java
       gcloud compute firewall-rules create mc-java-firewall --allow tcp \
       --priority 1000 --network minecraft --target-tags mc-java 2> errors.txt
 
-      ip=$(terraform output | tr -d "instance-ip = -")
+      ip=$(terraform output | sed '2d' | tr -d "instance-ip = -")
       user=$(whoami)
 
 
@@ -320,20 +322,20 @@ docker run -d -p 25565:25565 -e EULA=TRUE -e VERSION='${version}' -v ~/minecraft
         # copy world files over
         if [ $ftb ]
         then
-          gcloud compute ssh --zone us-west1-a mc-server-java --command 'sudo rm -r ~/minecraft/FeedTheBeast/'${worldname}''
+          gcloud compute ssh --zone us-west1-a $machine --command 'sudo rm -r ~/minecraft/FeedTheBeast/'${worldname}''
           scp -r $worldpath $user@$ip:/home/$user/
           ssh $user@$ip sudo mv /home/$user/$worldname /home/$user/minecraft/FeedTheBeast
-          gcloud compute ssh --zone us-west1-a mc-server-java --command 'sudo chmod -R 777 /home/'${user}'/minecraft/FeedTheBeast/'${worldname}''
+          gcloud compute ssh --zone us-west1-a machine --command 'sudo chmod -R 777 /home/'${user}'/minecraft/FeedTheBeast/'${worldname}''
         else
-          gcloud compute ssh --zone us-west1-a mc-server-java --command 'sudo rm -r ~/minecraft/'${worldname}''
+          gcloud compute ssh --zone us-west1-a $machine --command 'sudo rm -r ~/minecraft/'${worldname}''
           scp -r $worldpath $user@$ip:/home/$user/
           ssh $user@$ip sudo mv /home/$user/$worldname /home/$user/minecraft
-          gcloud compute ssh --zone us-west1-a mc-server-java --command 'sudo chmod -R 777 /home/'${user}'/minecraft/'${worldname}''
+          gcloud compute ssh --zone us-west1-a $machine --command 'sudo chmod -R 777 /home/'${user}'/minecraft/'${worldname}''
         fi
 
         # restart server
-        gcloud compute ssh --zone us-west1-a mc-server-java --command 'sudo docker stop mc'
-        gcloud compute ssh --zone us-west1-a mc-server-java --command 'sudo docker start mc'
+        gcloud compute ssh --zone us-west1-a $machine --command 'sudo docker stop mc'
+        gcloud compute ssh --zone us-west1-a $machine --command 'sudo docker start mc'
       fi 
   fi
 fi
