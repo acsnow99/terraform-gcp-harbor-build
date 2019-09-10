@@ -12,3 +12,8 @@ sudo curl -L --fail https://github.com/docker/compose/releases/download/1.24.0/r
 sudo chmod +x /usr/local/bin/docker-compose
 
 sudo apt-get install git
+
+sudo apt-get install -y unzip 
+wget https://releases.hashicorp.com/terraform/0.12.8/terraform_0.12.8_linux_amd64.zip
+unzip terraform_0.12.8_linux_amd64.zip
+sudo mv terraform /usr/local/bin/
