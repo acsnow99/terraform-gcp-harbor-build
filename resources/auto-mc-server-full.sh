@@ -209,10 +209,13 @@ docker run -d -p 19132:19132/udp -e EULA=TRUE -e VERSION='${version}' -e LEVEL_N
 else
   if [ $modded ]
   then
-    echo "This command will create a Forge-modded version "${version}" world titled '"${worldname}"' with the mod at
+    if [ $run = n ]
+    then
+      echo "This command will create a Forge-modded version "${version}" world titled '"${worldname}"' with the mod at
 "${modpath}" 
 installed. Continue(y or n)?"
-    read run
+      read run
+    fi
     if [ $run = y ]
     then
       echo "Then here we go!"
@@ -240,10 +243,13 @@ docker run -d -p 25565:25565 -e EULA=TRUE -e VERSION='${version}' -e TYPE=FORGE 
   else 
     if [ $ftb ]
     then 
-      echo "This command will create a FeedTheBeast version "${version}" world titled '"${worldname}"' with the modpack at
+      if [ $run = n ]
+      then
+        echo "This command will create a FeedTheBeast version "${version}" world titled '"${worldname}"' with the modpack at
 '${modpack}'
 installed. Continue(y or n)?"
-      read run
+        read run
+      fi
       if [ $run = y ]
       then
         echo "Then here we go!"
@@ -270,8 +276,11 @@ docker run -d -p 25565:25565 -e EULA=TRUE -e VERSION='${version}' -e TYPE=FTB -e
         echo "Server creation cancelled"
       fi
     else 
-      echo "This command will create a vanilla version "${version}" world titled '"${worldname}".' Continue(y or n)?"
-      read run
+      if [ $run = n ]
+      then
+        echo "This command will create a vanilla version "${version}" world titled '"${worldname}".' Continue(y or n)?"
+        read run
+      fi
       if [ $run = y ]
       then
         echo "Then here we go!"
