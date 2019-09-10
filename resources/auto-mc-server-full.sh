@@ -63,6 +63,9 @@ Other Note: Using both -m and -f will only activate -m
      tfvars=$OPTARG
      bedrock_tfvars=$OPTARG
      ;;
+   y )
+     run="y"
+     ;;
    \? )
      echo "Invalid Option: -$OPTARG
 
@@ -147,7 +150,6 @@ enable-rcon=true" > ./resources/server.properties
 
 if [ $bedrock ]
 then
-
 
   echo "This command will create a Bedrock version "${version}" world titled '"${worldname}"' Continue(y or n)?"
   read run
