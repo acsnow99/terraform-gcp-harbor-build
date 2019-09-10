@@ -4,6 +4,7 @@ node('docker') {
         checkout scm
 
     stage 'Clear Environment'
+        sh "terraform init"
         sh "terraform destroy -var-file=states/mc-server-java-jenkins.tfvars || true"
         sh "yes Y | gcloud compute firewall-rules delete mc-java-firewall || true"
   
