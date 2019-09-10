@@ -7,7 +7,7 @@ modpack=""
 tfvars="states/mc-server-java.tfvars"
 bedrock_tfvars="states/mc-server-bedrock.tfvars"
 
-while getopts ":hg:w:v:m:f:be:rt:" opt; do
+while getopts ":hg:w:v:m:f:be:rt:y" opt; do
   case ${opt} in
    h )
      echo "
