@@ -4,8 +4,10 @@ version="1.14.4"
 modpath=""
 worldtype="DEFAULT"
 modpack=""
+tfvars="states/mc-server-java.tfvars"
+bedrock_tfvars="states/mc-server-bedrock.tfvars"
 
-while getopts ":hg:w:v:m:f:be:r" opt; do
+while getopts ":hg:w:v:m:f:be:rt:" opt; do
   case ${opt} in
    h )
      echo "
@@ -22,6 +24,8 @@ Java-only flags:
 -m Activates Forge; path to the mod file(.jar) required
 -b Creates a Biomes 'O' Plenty world if -f or -m is also called and the modpath after -m points to the Biomes 'O' Plenty mod file
 -f Activates FTB; URL or path of modpack required
+
+-t Alternate .tfvars file to run Terraform with, to change the setup of the server machine. Copy states/mc-server-java.tfvars or states/mc-server-bedrock.tfvars to get started.
 
 Note: Make sure the modpacks and mods match the version of Minecraft under the -v flag
 Other Note: Using both -m and -f will only activate -m
@@ -55,6 +59,10 @@ Other Note: Using both -m and -f will only activate -m
    r )
      bedrock=true
      ;;
+   t )
+     tfvars=$OPTARG
+     bedrock_tfvars=$OPTARG
+     ;;
    \? )
      echo "Invalid Option: -$OPTARG
 
@@ -71,6 +79,8 @@ Java-only flags:
 -m Activates Forge; path to the mod file(.jar) required
 -b Creates a Biomes 'O' Plenty world if -f or -m is also called and the modpath after -m points to the Biomes 'O' Plenty mod file
 -f Activates FTB; URL or path of modpack required
+
+-t Alternate .tfvars file to run Terraform with, to change the setup of the server machine. Copy states/mc-server-java.tfvars or states/mc-server-bedrock.tfvars to get started.
 
 Note: Make sure the modpacks and mods match the version of Minecraft under the -v flag
 Other Note: Using both -m and -f will only activate -m
@@ -162,7 +172,7 @@ mkdir ~/minecraft/worlds/'${worldname}'
 docker run -d -p 19132:19132/udp -e EULA=TRUE -e VERSION='${version}' -e LEVEL_NAME='${worldname}' -e GAMEMODE='${gamemode}' -v ~/minecraft:/data --name mc itzg/minecraft-bedrock-server' > ./resources/mc-install-bedrock-docker.sh
 
     terraform init
-    yes yes | terraform apply -var-file=states/mc-server-bedrock.tfvars
+    yes yes | terraform apply -var-file=$bedrock_tfvars
     gcloud compute instances add-tags mc-server-bedrock --tags mc-bedrock
     gcloud compute firewall-rules create mc-bedrock-firewall --allow udp \
     --priority 1000 --network minecraft --target-tags mc-bedrock 2> errors.txt
@@ -296,7 +306,7 @@ docker run -d -p 25565:25565 -e EULA=TRUE -e VERSION='${version}' -v ~/minecraft
       --region=us-west1 2> errors.txt
 
       terraform init
-      yes yes | terraform apply -var-file=states/mc-server-java.tfvars
+      yes yes | terraform apply -var-file=$tfvars
       gcloud compute instances add-tags mc-server-java --tags mc-java
       gcloud compute firewall-rules create mc-java-firewall --allow tcp \
       --priority 1000 --network minecraft --target-tags mc-java 2> errors.txt

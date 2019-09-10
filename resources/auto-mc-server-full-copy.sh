@@ -9,7 +9,7 @@ while getopts ":hg:w:v:m:f:be:r" opt; do
   case ${opt} in
    h )
      echo "
-BEFORE RUNNING, EDIT states/mc-server-java-jenkins.tfvars SO THAT THE project AND credentials-file VARIABLES MATCH YOURS
+BEFORE RUNNING, EDIT states/mc-server-java.tfvars SO THAT THE project AND credentials-file VARIABLES MATCH YOURS
 
 Usage:
 -g Gamemode of the server(0 or 1 for Java, survival or creative for Bedrock)
@@ -58,7 +58,7 @@ Other Note: Using both -m and -f will only activate -m
    \? )
      echo "Invalid Option: -$OPTARG
 
-BEFORE RUNNING, EDIT states/mc-server-java-jenkins.tfvars SO THAT THE project AND credentials-file VARIABLES MATCH YOURS
+BEFORE RUNNING, EDIT states/mc-server-java.tfvars SO THAT THE project AND credentials-file VARIABLES MATCH YOURS
 
 Usage:
 -g Gamemode of the server(0 or 1 for Java, survival or creative for Bedrock)
@@ -290,8 +290,8 @@ docker run -d -p 25565:25565 -e EULA=TRUE -e VERSION='${version}' -v ~/minecraft
       --region=us-west1 2> errors.txt
 
       terraform init
-      yes yes | terraform apply -var-file=states/mc-server-java-jenkins.tfvars
-      gcloud compute instances add-tags mc-server-java-jenkins --tags mc-java
+      yes yes | terraform apply -var-file=states/mc-server-java.tfvars
+      gcloud compute instances add-tags mc-server-java --tags mc-java
       gcloud compute firewall-rules create mc-java-firewall --allow tcp \
       --priority 500 --network minecraft --target-tags mc-java 2> errors.txt
 
@@ -304,20 +304,20 @@ docker run -d -p 25565:25565 -e EULA=TRUE -e VERSION='${version}' -v ~/minecraft
         # copy world files over
         if [ $ftb ]
         then
-          gcloud compute ssh --zone us-west1-a mc-server-java-jenkins --command 'sudo rm -r ~/minecraft/FeedTheBeast/'${worldname}''
+          gcloud compute ssh --zone us-west1-a mc-server-java --command 'sudo rm -r ~/minecraft/FeedTheBeast/'${worldname}''
           scp -r $worldpath $user@$ip:/home/$user/
           ssh $user@$ip sudo mv /home/$user/$worldname /home/$user/minecraft/FeedTheBeast
-          gcloud compute ssh --zone us-west1-a mc-server-java-jenkins --command 'sudo chmod -R 777 /home/alexsnow/minecraft/FeedTheBeast/'${worldname}''
+          gcloud compute ssh --zone us-west1-a mc-server-java --command 'sudo chmod -R 777 /home/alexsnow/minecraft/FeedTheBeast/'${worldname}''
         else
-          gcloud compute ssh --zone us-west1-a mc-server-java-jenkins --command 'sudo rm -r ~/minecraft/'${worldname}''
+          gcloud compute ssh --zone us-west1-a mc-server-java --command 'sudo rm -r ~/minecraft/'${worldname}''
           scp -r $worldpath $user@$ip:/home/$user/
           ssh $user@$ip sudo mv /home/$user/$worldname /home/$user/minecraft
-          gcloud compute ssh --zone us-west1-a mc-server-java-jenkins --command 'sudo chmod -R 777 /home/alexsnow/minecraft/'${worldname}''
+          gcloud compute ssh --zone us-west1-a mc-server-java --command 'sudo chmod -R 777 /home/alexsnow/minecraft/'${worldname}''
         fi
 
         # restart server
-        gcloud compute ssh --zone us-west1-a mc-server-java-jenkins --command 'sudo docker stop mc'
-        gcloud compute ssh --zone us-west1-a mc-server-java-jenkins --command 'sudo docker start mc'
+        gcloud compute ssh --zone us-west1-a mc-server-java --command 'sudo docker stop mc'
+        gcloud compute ssh --zone us-west1-a mc-server-java --command 'sudo docker start mc'
       fi 
   fi
 fi

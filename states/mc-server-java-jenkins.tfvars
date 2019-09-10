@@ -1,6 +1,6 @@
 // add definitions for region, project, 
 // and network to match where in GCP you want this
-prefix = "mc-server-java-jenkins"
+prefix = "mc-server-java"
 
 network = "minecraft"
 subnet = "minecraft-1"
