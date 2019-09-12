@@ -47,7 +47,6 @@ variable "layer-2" {
 }
 
 variable "gcp-service-key" {
-    default = "~/terraform/terraform_keys/terraform-gcp-harbor-80a453b96ca7.json"
 }
 variable "gcp-key-location" {
     description = "The remote location the key will be put in. Only change if you are using a different script from the harbor ones provided."

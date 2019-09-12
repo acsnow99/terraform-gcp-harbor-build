@@ -339,7 +339,7 @@ docker run -d -p 25565:25565 -e EULA=TRUE -e VERSION='${version}' -v ~/minecraft
           gcloud compute ssh --zone us-west1-a $machine --command 'sudo rm -r ~/minecraft/FeedTheBeast/'${worldname}''
           scp -r $worldpath $user@$ip:/home/$user/
           ssh $user@$ip sudo mv /home/$user/$worldname /home/$user/minecraft/FeedTheBeast
-          gcloud compute ssh --zone us-west1-a machine --command 'sudo chmod -R 777 /home/'${user}'/minecraft/FeedTheBeast/'${worldname}''
+          gcloud compute ssh --zone us-west1-a $machine --command 'sudo chmod -R 777 /home/'${user}'/minecraft/FeedTheBeast/'${worldname}''
         else
           gcloud compute ssh --zone us-west1-a $machine --command 'sudo rm -r ~/minecraft/'${worldname}''
           scp -r $worldpath $user@$ip:/home/$user/
