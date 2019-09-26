@@ -33,7 +33,7 @@ yes yes | terraform apply -var-file=states/harbor-master-remote.tfvars
 # get the ip address from the terraform output into the rest of the script
 ip=$(terraform output | tr -d "instance-ip = -")
 
-touch ip.txt && terraform output | tr -d "instance-ip = -" > ip.txt
+echo "$ip core.harbor.domain" | sudo tee -a /etc/hosts
 
 # get the cert from the instance
 scp -i /home/alexsnow/.ssh/id_rsa -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -v alexsnow@$ip:~/ca.crt .

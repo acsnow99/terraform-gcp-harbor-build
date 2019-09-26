@@ -1,6 +1,6 @@
 # script to automatically set up a Harbor instance you can push images to
 
-yes yes | terraform apply -var-file=states/harbor-runner2.tfvars
+yes yes | terraform apply -var-file=states/harbor-runner.tfvars
 
 # get the ip address from the terraform output into the rest of the script
 ip=$(terraform output | tr -d "instance-ip = -")
