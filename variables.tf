@@ -42,7 +42,7 @@ variable "layer-1" {
     default = "0"
 }
 variable "layer-2" {
-    description = "Set to 1 for an auto-setup Harbor instance with less direct control"
+    description = "Set to 1 for an auto-setup Harbor instance"
     default = "0"
 }
 

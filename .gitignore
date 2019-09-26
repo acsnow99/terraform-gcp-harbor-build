@@ -1,2 +1,5 @@
 *.tfstate*
 ip.txt
+mc-docker-rebuild-jenkins
+errors.txt
+.terraform
